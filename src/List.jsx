@@ -1,59 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function List() {
+export default function List(props) {
+    const [alldata, setData] = useState(null)
+
+    useEffect(() => {
+        fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+            .then((res) => res.json())
+            .then((data) => setData(data))
+            .catch((error) => console.log(error))
+    }, [])
+
+    function clickfn(ids) {
+        props.setIdchange(ids)
+    }
+
     return (
         <div className="container mx-auto bg-blue-50 p-10">
-            <div className="grid grid-cols-4 gap-5">
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/beef.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Beef</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/chicken.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Chicken</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/dessert.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Dessert</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/lamb.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Lamb</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/miscellaneous.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Miscellaneous</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/pasta.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Pasta</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
-                <div className="border rounded-lg shadow bg-blue-100">
-                    <img src="https://www.themealdb.com/images/category/pork.png" alt="" className="h-52" />
-                    <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
-                        <h1 className="font-semibold text-lg">Pork</h1>
-                        <a href=""><i class="fa-regular fa-heart"></i></a>
-                    </div>
-                </div>
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 lg:gap-5">
+                {alldata && alldata.categories.map((lists) => {
+                    return (
+                        <div className="border rounded-lg shadow bg-blue-100" key={lists.idCategory}>
+                            <Link to={`/des/${lists.idCategory}`}>
+                                <img src={lists.strCategoryThumb} alt="" className="h-52" />
+                            </Link>
+                            <div className="flex flex-row justify-between p-3 bg-blue-300 mt-2">
+                                <h1 className="font-semibold text-lg">{lists.strCategory}</h1>
+                                <button type="button" onClick={() => clickfn(lists.idCategory)}>
+                                    <i className="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    )
+                })
+                }
             </div>
-        </div>
+        </div >
     )
 }
